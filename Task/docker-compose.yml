@@ -1,0 +1,12 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: task_db # Optional: Automatically create a database
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data:/var/lib/mysql # Persist data between restarts
