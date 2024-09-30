@@ -4,6 +4,13 @@ import { AuthService } from "../../services/auth/auth.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
 
+interface UserDto {
+  id: number;
+  name: string;
+  email: string;
+  userRole: string;
+}
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -53,15 +60,15 @@ export class SignupComponent {
       console.log("Sending signup request:", signupData);
       
       this.authService.signup(signupData).subscribe({
-        next: (res) => {
+        next: (res: UserDto) => {
           console.log("Signup response:", res);
-          if (res && res.id != null) {
-            this.snackbar.open("Signup successful", "Close", { duration: 5000 });
+          if (res && res.id) {
+            this.snackbar.open(`Signup successful. Welcome, ${res.name}!`, "Close", { duration: 5000 });
             setTimeout(() => {
               this.router.navigate(['/login']);
-            }, 1000);
+            }, 2000);
           } else {
-            this.snackbar.open("Signup failed. Try again!", "Close", {
+            this.snackbar.open("Signup failed. Unexpected response format.", "Close", {
               duration: 5000,
               panelClass: "error-snackbar"
             });
