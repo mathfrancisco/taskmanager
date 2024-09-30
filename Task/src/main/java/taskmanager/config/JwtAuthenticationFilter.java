@@ -23,34 +23,46 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final JwtUtil jwtUtil;
-  private final UserService userService;
-
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,@NonNull FilterChain filterChain)
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-      final String authHeader = request.getHeader("Authorization");
-      final String jwt;
-      final String userEmail;
-      if (StringUtils.isEmpty(authHeader)|| !StringUtils.startsWith(authHeader,"Bearer")){
-          filterChain.doFilter(request, response);
-      }
-      jwt = authHeader.substring(7);
-      userEmail = jwtUtil.extractUserName(jwt);
-      if (StringUtils.isNotEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication()==null) {
-          UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userEmail);
-          if (jwtUtil.isTokenValid(jwt,userDetails)){
-              SecurityContext context = SecurityContextHolder.createEmptyContext();
-              UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-              authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-              context.setAuthentication(authToken);
-              SecurityContextHolder.setContext(context);
-          }
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String userEmail;
 
-      }
-      filterChain.doFilter(request, response);
+        // Verifica se o cabeçalho Authorization está ausente ou não começa com "Bearer"
+        if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer")) {
+            filterChain.doFilter(request, response); // Continua a cadeia de filtros
+            return; // Sai do método para evitar execução adicional
+        }
 
+        // Extrai o token JWT do cabeçalho (a partir do 7º caractere para remover "Bearer ")
+        jwt = authHeader.substring(7);
+        userEmail = jwtUtil.extractUserName(jwt); // Extrai o nome de usuário do token JWT
+
+        // Se o email foi extraído e o usuário ainda não está autenticado no contexto
+        if (StringUtils.isNotEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userEmail);
+
+            // Verifica se o token é válido
+            if (jwtUtil.isTokenValid(jwt, userDetails)) {
+                // Configura a autenticação no contexto de segurança
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                context.setAuthentication(authToken);
+                SecurityContextHolder.setContext(context);
+            }
+        }
+
+        // Continua a cadeia de filtros
+        filterChain.doFilter(request, response);
     }
 }
+
