@@ -1,25 +1,37 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable, Inject } from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-
-const BASE_URL = 'http://localhost:8080/';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  private apiUrl = 'http://localhost:8080/';
+  constructor(
+    private http: HttpClient
+  ) {}
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    }),
+    withCredentials: true
+  };
 
   signup(signupRequest: any): Observable<any> {
-    return this.http.post(BASE_URL + 'api/auth/signup', signupRequest).pipe(
+    return this.http.post(`${this.apiUrl}api/auth/signup`, signupRequest, this.httpOptions).pipe(
       catchError((error: HttpErrorResponse) => {
-        return throwError(() => error); // Pass the whole error object to handle it better in the component
+        if (error.status === 409) {
+          // Usuário já existe
+          return throwError(() => new Error("User with this email already exists."));
+        } else {
+          return throwError(() => new Error("An unexpected error occurred."));
+        }
       })
     );
   }
 
   login(loginRequest: any): Observable<any> {
-    return this.http.post(BASE_URL + 'api/auth/login', loginRequest);
+    return this.http.post(`${this.apiUrl}api/auth//login`, loginRequest, this.httpOptions);
   }
 }
