@@ -18,6 +18,10 @@ export class SignupComponent {
     })
   }
   togglePasswordVisibility(){
-   this.hidePassword=!this.hidePassword
+   this.hidePassword=!this.hidePassword;
+  }
+
+  onSubmit(){
+    console.log(this.signupForm.value);
   }
 }
