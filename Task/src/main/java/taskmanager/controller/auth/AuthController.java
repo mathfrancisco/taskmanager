@@ -7,10 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import taskmanager.dto.AuthenticationRequest;
 import taskmanager.dto.AuthenticationResponse;
 import taskmanager.dto.SignupRequest;
@@ -26,6 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class AuthController {
 
     private final AuthService authService;
@@ -40,11 +38,13 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signupUser(@RequestBody SignupRequest signupRequest) {
-        if (authService.hasUserWithEmail(signupRequest.getEmail()))
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User already exists with this email");
+        if (authService.hasUserWithEmail(signupRequest.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists with this email");
+        }
         UserDto createdUserDto = authService.signupUser(signupRequest);
-        if (createdUserDto == null)
+        if (createdUserDto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User could not be created");
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUserDto);
     }
 
