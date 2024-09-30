@@ -66,7 +66,7 @@ export class SignupComponent {
             this.snackbar.open(`Signup successful. Welcome, ${res.name}!`, "Close", { duration: 5000 });
             setTimeout(() => {
               this.router.navigate(['/login']);
-            }, 2000);
+            }, 5000);
           } else {
             this.snackbar.open("Signup failed. Unexpected response format.", "Close", {
               duration: 5000,
