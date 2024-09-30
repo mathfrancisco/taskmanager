@@ -45,7 +45,7 @@ public class AuthController {
         if (createdUserDto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User could not be created");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUserDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUserDto); // Certifique-se de que createdUserDto contém os dados corretos.
     }
 
     @PostMapping("/login")

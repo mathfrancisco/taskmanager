@@ -54,12 +54,11 @@ export class SignupComponent {
 
       this.authService.signup(signupData).subscribe(
         (res) => {
-          console.log("Signup response:", res);
           if (res && res.id != null) {
             this.snackbar.open("Signup successful", "Close", { duration: 5000 });
-            this.router.navigate(['/login']);
+            this.router.navigate(['/login']); // Ensure this line is reached
           } else {
-            this.snackbar.open("Signup Failed. Try again!", "Close", {
+            this.snackbar.open("Signup failed. Try again!", "Close", {
               duration: 5000,
               panelClass: "error-snackbar"
             });
@@ -67,10 +66,19 @@ export class SignupComponent {
         },
         (error) => {
           console.error("Signup error:", error);
-          this.snackbar.open("An error occurred. Please try again.", "Close", {
-            duration: 5000,
-            panelClass: "error-snackbar"
-          });
+
+          // Verifica se o erro é por conflito (usuário já existente)
+          if (error.status === 409) {
+            this.snackbar.open("User already exists with this email", "Close", {
+              duration: 5000,
+              panelClass: "error-snackbar"
+            });
+          } else {
+            this.snackbar.open("An error occurred. Please try again.", "Close", {
+              duration: 5000,
+              panelClass: "error-snackbar"
+            });
+          }
         }
       );
     } else {
