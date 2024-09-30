@@ -35,7 +35,7 @@ export class SignupComponent {
     if (this.signupForm.valid) {
       const password = this.signupForm.get("password")?.value;
       const confirmPassword = this.signupForm.get("confirmPassword")?.value;
-
+      
       if (password !== confirmPassword) {
         this.snackbar.open("Passwords do not match!", "Close", {
           duration: 5000,
@@ -51,12 +51,15 @@ export class SignupComponent {
       };
 
       console.log("Sending signup request:", signupData);
-
-      this.authService.signup(signupData).subscribe(
-        (res) => {
+      
+      this.authService.signup(signupData).subscribe({
+        next: (res) => {
+          console.log("Signup response:", res);
           if (res && res.id != null) {
             this.snackbar.open("Signup successful", "Close", { duration: 5000 });
-            this.router.navigate(['/login']); // Ensure this line is reached
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 1000);
           } else {
             this.snackbar.open("Signup failed. Try again!", "Close", {
               duration: 5000,
@@ -64,10 +67,8 @@ export class SignupComponent {
             });
           }
         },
-        (error) => {
+        error: (error) => {
           console.error("Signup error:", error);
-
-          // Verifica se o erro é por conflito (usuário já existente)
           if (error.status === 409) {
             this.snackbar.open("User already exists with this email", "Close", {
               duration: 5000,
@@ -80,7 +81,7 @@ export class SignupComponent {
             });
           }
         }
-      );
+      });
     } else {
       this.snackbar.open("Please fill all required fields correctly.", "Close", {
         duration: 5000,
