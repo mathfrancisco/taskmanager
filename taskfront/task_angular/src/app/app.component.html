@@ -11,10 +11,11 @@
     <span class="navbar-brand">Admin</span>
     <span class="spacer"></span>
     <button mat-button routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</button>
+    <button mat-button routerLink="/admin/task" routerLinkActive="active">Postar Tarefa</button>
     <button mat-button (click)="logout()" routerLinkActive="active">Sair</button>
   </mat-toolbar>
 </div>
-<div *ngIf="!isEmployeeLoggedIn">
+<div *ngIf="isEmployeeLoggedIn">
   <mat-toolbar color="primary" class="navbar">
     <span class="navbar-brand">Empregado</span>
     <span class="spacer"></span>
