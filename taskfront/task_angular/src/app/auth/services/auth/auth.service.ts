@@ -32,6 +32,15 @@ export class AuthService {
   }
 
   login(loginRequest: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}api/auth//login`, loginRequest, this.httpOptions);
+    return this.http.post(`${this.apiUrl}api/auth/login`, loginRequest, this.httpOptions).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 409) {
+          // Usuário já existe
+          return throwError(() => new Error("User with this email already exists."));
+        } else {
+          return throwError(() => new Error("An unexpected error occurred."));
+        }
+      })
+    );
   }
 }
