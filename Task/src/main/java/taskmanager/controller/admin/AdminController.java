@@ -24,5 +24,10 @@ public class AdminController {
       return ResponseEntity.status(HttpStatus.CREATED).body(createdTaskDto);
     }
 
+    @GetMapping("/tasks")
+    public ResponseEntity<?> getAllTasks(){
+        return ResponseEntity.ok(adminService.getAllTasks());
+    }
+
 
 }

@@ -17,6 +17,11 @@ export class AdminService {
       headers: this.createAuthorizationHeader()
     })
   }
+  postTask(taskDto : any):Observable<any>{
+    return this.http.post(BASIC_URL+"api/admin/task",taskDto, {
+      headers: this.createAuthorizationHeader()
+    })
+  }
   private createAuthorizationHeader():HttpHeaders {
     return new HttpHeaders().set('Authorization', 'Bearer ' + StorageService.getToken())
   }
