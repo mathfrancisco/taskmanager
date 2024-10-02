@@ -10,8 +10,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 export class PostTaskComponent {
 
    taskForm!: FormGroup;
-   listofEmployees:any=[];
-   listofPriorities:any=["LOW","MEDIUM","HIGH"];
+   listOfEmployees:any=[];
+   listOfPriorities:any=["BAIXA","MÉDIA","ALTA"];
+
 
   constructor(private adminService: AdminService,
               private fb: FormBuilder) {
@@ -28,7 +29,7 @@ export class PostTaskComponent {
 
   getUsers(){
     this.adminService.getUsers().subscribe((res)=>{
-      this.listofEmployees = res;
+      this.listOfEmployees = res;
       console.log(res);
     })
   }
