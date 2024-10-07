@@ -13,12 +13,14 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatSelectModule} from "@angular/material/select";
 import {DemoAngularMaterialModule} from "../../DemoAngularMaterialModule";
 import {MatFormFieldModule} from "@angular/material/form-field";
+import { UpdateTaskComponent } from './components/update-task/update-task.component';
 
 
 @NgModule({
   declarations: [
     DashboardComponent,
-    PostTaskComponent
+    PostTaskComponent,
+    UpdateTaskComponent
   ],
   imports: [
     CommonModule,
