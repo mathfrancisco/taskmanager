@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import { Observable } from "rxjs";
 import { StorageService } from "../../../auth/services/storage/storage.service";
 
@@ -44,6 +44,17 @@ export class AdminService {
     return this.http.put(BASIC_URL + `api/admin/task/${id}`, taskDto, {
       headers: this.createAuthorizationHeader()
     })
+  }
+
+  searchTask(title: string): Observable<any> {
+    let params = new HttpParams();
+    if (title) {
+      params = params.set('title', title);
+    }
+    return this.http.get(BASIC_URL + `api/admin/tasks/search/${title}`, {
+      headers: this.createAuthorizationHeader(),
+      params: params
+    });
   }
 
   private createAuthorizationHeader(): HttpHeaders {

@@ -57,6 +57,7 @@ export class UpdateTaskComponent {
       } else {
         this.snackBar.open("Something went wrong", "ERROR", { duration: 5000 });
       }
+
     });
   }
 }
