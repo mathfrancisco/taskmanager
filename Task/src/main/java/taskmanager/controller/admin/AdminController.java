@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import taskmanager.dto.TaskDto;
 import taskmanager.services.admin.AdminService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
@@ -44,4 +46,9 @@ public class AdminController {
         if(updateTask ==null)return ResponseEntity.notFound().build();
         return ResponseEntity.ok(updateTask);
   }
+
+    @GetMapping("/tasks/search/{title}")
+    public ResponseEntity<List<TaskDto>> searchTasks(@PathVariable String title) {
+        return ResponseEntity.ok(adminService.searchTaskByTitle(title));
+    }
 }
