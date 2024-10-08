@@ -40,6 +40,11 @@ export class AdminService {
       headers: this.createAuthorizationHeader()
     })
   }
+  updateTask(id: number, taskDto: any): Observable<any> {
+    return this.http.put(BASIC_URL + `api/admin/task/${id}`, taskDto, {
+      headers: this.createAuthorizationHeader()
+    })
+  }
 
   private createAuthorizationHeader(): HttpHeaders {
     return new HttpHeaders().set('Authorization', 'Bearer ' + StorageService.getToken())

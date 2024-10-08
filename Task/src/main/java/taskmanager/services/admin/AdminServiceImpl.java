@@ -76,24 +76,28 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public TaskDto updateTask(Long id, TaskDto taskDto) {
         Optional<Task> optionalTask = taskRepository.findById(id);
-        if (optionalTask.isPresent()) {
-            Task existingtask = optionalTask.get();
-            existingtask.setTitle(taskDto.getTitle());
-            existingtask.setDescription(taskDto.getDescription());
-            existingtask.setDueDate(taskDto.getDueDate());
-            existingtask.setPriority(taskDto.getPriority());
-            existingtask.setTaskStatus(mapStringToTaskStatus(String.valueOf(taskDto.getTaskStatus())));
-            return taskRepository.save(existingtask).getTaskDto();
+        Optional<User> optionalUser = userRepository.findById(taskDto.getEmployeeId());
+        if (optionalTask.isPresent() && optionalUser.isPresent()) {
+            Task existingTask = optionalTask.get();
+            existingTask.setTitle(taskDto.getTitle());
+            existingTask.setDescription(taskDto.getDescription());
+            existingTask.setDueDate(taskDto.getDueDate());
+            existingTask.setPriority(taskDto.getPriority());
+            existingTask.setTaskStatus(mapStringToTaskStatus(String.valueOf(taskDto.getTaskStatus())));
+            existingTask.setUser(optionalUser.get());
+            return taskRepository.save(existingTask).getTaskDto();
         }
         return null;
     }
-    private  TaskStatus mapStringToTaskStatus(String status){
-         return switch (status){
-            case "PENDENTE"-> TaskStatus.PENDING;
-            case "EM PROGRESSO"-> TaskStatus.INPROGRESS;
-            case "COMPLETADA"-> TaskStatus.COMPLETED;
-            case "DIFERIDA"-> TaskStatus.DEFERRED;
-             default -> TaskStatus.CANCELLED;
+
+    private TaskStatus mapStringToTaskStatus(String status) {
+        return switch (status.toUpperCase()) {
+            case "PENDING" -> TaskStatus.PENDING;
+            case "INPROGRESS", "EMPROGRESSO" -> TaskStatus.INPROGRESS;
+            case "COMPLETED", "COMPLETADA" -> TaskStatus.COMPLETED;
+            case "DEFERRED", "DIFERIDA" -> TaskStatus.DEFERRED;
+            case "CANCELLED" -> TaskStatus.CANCELLED;
+            default -> throw new IllegalArgumentException("Status inválido: " + status);
         };
     }
 }
