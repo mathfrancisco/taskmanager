@@ -20,6 +20,16 @@
         <span class="info-label">Status</span>
         <span class="info-value">{{ task.taskStatus }}</span>
       </div>
+      <mat-divider></mat-divider>
+      <div class="actions">
+        <button mat-icon-button color="primary" class="update-button" [matMenuTriggerFor]="statusMenu">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <mat-menu #statusMenu="matMenu">
+          <button mat-menu-item (click)="updateStatus(task.id,'INPROGESS')">Em Progresso</button>
+          <button mat-menu-item (click)="updateStatus(task.id,'COMPLETED')">Completada</button>
+        </mat-menu>
+      </div>
     </div>
   </mat-card>
 </div>

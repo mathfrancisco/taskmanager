@@ -65,6 +65,18 @@ mat-divider {
   margin: 16px 0;
 }
 
+.actions{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  .update-button{
+    margin-right: 10px;
+  }
+  .view-button{
+    margin-right: 10px;
+  }
+}
+
 // Add responsive design for smaller screens
 @media (max-width: 1024px) {
   .task-list {
