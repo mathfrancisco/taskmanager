@@ -1,1 +1,25 @@
-<p>dashboard works!</p>
+<div class="task-list">
+  <mat-card class="task-card" *ngFor="let task of listOfTasks">
+    <div class="task-details">
+      <h2 class="task-name">{{task.title}}</h2>
+      <p class="task-description">{{task.description}}</p>
+      <mat-divider></mat-divider>
+      <div class="info-row">
+        <span class="info-label">Data de Vencimento:</span>
+        <span class="info-value">{{ task.dueDate | date: 'MMM d, y' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Empregado</span>
+        <span class="info-value">{{ task.employeeName }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Prioridade</span>
+        <span class="info-value">{{ task.priority }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Status</span>
+        <span class="info-value">{{ task.taskStatus }}</span>
+      </div>
+    </div>
+  </mat-card>
+</div>
