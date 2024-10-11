@@ -24,21 +24,11 @@ O **TaskManager** é uma aplicação voltada para a organização e gestão de t
 
 ## 🎨 Diagramas UML
 
-- **Diagrama de Sequência**:
+- **Diagrama Geral**:
+  - Este diagrama exemplifica a arquitetura geral da aplicação, incluindo o frontend, backend, banco de dados, e a infraestrutura baseada na AWS:
 
   ![Diagrama de Sequência](link_para_diagrama_sequencia)
 
-- **Diagrama de Caso de Uso**:
-
-  ![Diagrama de Caso de Uso](link_para_diagrama_caso_uso)
-
-- **Diagrama de Classes**:
-
-  ![Diagrama de Classes](link_para_diagrama_classes)
-
-- **Diagrama de Banco de Dados**:
-
-  ![Diagrama de Banco de Dados](link_para_diagrama_banco_dados)
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -77,27 +67,29 @@ O **TaskManager** é uma aplicação voltada para a organização e gestão de t
 - **Docker**:
   - Ferramenta de containerização que permite empacotar a aplicação com todas as suas dependências, garantindo que ela rode da mesma forma em qualquer ambiente. Docker facilita o processo de deploy, permitindo que a aplicação seja executada de maneira consistente em diferentes sistemas.
 
-- **AWS (Amazon Web Services)**:
-  - Plataforma de serviços em nuvem onde a aplicação é hospedada. A AWS oferece uma infraestrutura escalável e segura para rodar a aplicação, além de serviços como RDS (para banco de dados) e EC2 (para execução de contêineres e instâncias).
+- **Terraform**:
+   - Ferramenta para provisionamento de infraestrutura como código (IaC). Com o Terraform, é possível configurar automaticamente os recursos da **AWS** necessários para a aplicação, como Elastic Beanstalk e bancos de dados.
+- **AWS Elastic Beanstalk**:
+   - Plataforma da AWS para o deploy e gerenciamento de aplicações. A aplicação será implantada no Elastic Beanstalk, facilitando o escalonamento e a gestão de infraestrutura.
 
 ## 🚧 Deploy
 
-A aplicação está configurada para ser implantada usando Docker e AWS. Siga os passos abaixo para implantar:
+ - **A implantação da aplicação utiliza Docker, Terraform e AWS Elastic Beanstalk. Siga os passos abaixo para o deploy:**
 
 1. Faça o build da aplicação usando o Maven.
 2. Crie a imagem Docker do backend e frontend.
-3. Implante as imagens em uma instância EC2 da AWS.
-4. O banco de dados está hospedado em uma instância do RDS na AWS.
+3. Use o Terraform para provisionar a infraestrutura necessária no AWS Elastic Beanstalk.
+4. Implante as imagens Docker no Elastic Beanstalk.
 
 ## 👥 Dados de Acesso (para testes)
 
 - **Usuário Admin**:
-  - Email: admin@taskmanager.com
-  - Senha: admin123
+  - Email: admin@test.com
+  - Senha: admin
 
 - **Usuário Comum**:
-  - Email: user@taskmanager.com
-  - Senha: user123
+  - Email: ari@test.com
+  - Senha: ari
 
 ## 📜 Licença
 
