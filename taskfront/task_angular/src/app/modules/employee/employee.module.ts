@@ -6,12 +6,14 @@ import {HttpClientModule} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DemoAngularMaterialModule} from "../../DemoAngularMaterialModule";
 import {DashboardComponent} from "./components/dashboard/dashboard.component";
+import { ViewTaskDetailsComponent } from './components/view-task-details/view-task-details.component';
 
 
 
 @NgModule({
   declarations: [
-    DashboardComponent
+    DashboardComponent,
+    ViewTaskDetailsComponent
   ],
   imports: [
     CommonModule,

@@ -14,13 +14,15 @@ import {MatSelectModule} from "@angular/material/select";
 import {DemoAngularMaterialModule} from "../../DemoAngularMaterialModule";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import { UpdateTaskComponent } from './components/update-task/update-task.component';
+import { ViewTaskDetailsComponent } from './components/view-task-details/view-task-details.component';
 
 
 @NgModule({
   declarations: [
     DashboardComponent,
     PostTaskComponent,
-    UpdateTaskComponent
+    UpdateTaskComponent,
+    ViewTaskDetailsComponent
   ],
   imports: [
     CommonModule,
