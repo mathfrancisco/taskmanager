@@ -9,6 +9,12 @@
       "environment": [
         {"name": "MYSQL_ROOT_PASSWORD", "value": "root"},
         {"name": "MYSQL_DATABASE", "value": "task_db"}
+      ],
+      "portMappings": [
+        {
+          "containerPort": 3306,
+          "hostPort": 3306
+        }
       ]
     },
     {
