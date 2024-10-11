@@ -4,14 +4,32 @@ provider "aws" {
 
 resource "aws_s3_bucket" "eb_bucket" {
   bucket = "eb-app-bucket-${random_id.bucket_suffix.hex}"
-  acl    = "private"
+}
 
-  versioning {
-    enabled = true
+resource "aws_s3_bucket_ownership_controls" "eb_bucket_ownership" {
+  bucket = aws_s3_bucket.eb_bucket.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
   }
 }
 
-resource "aws_s3_bucket_object" "dockerrun_file" {
+resource "aws_s3_bucket_public_access_block" "eb_bucket_public_access" {
+  bucket = aws_s3_bucket.eb_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "eb_bucket_versioning" {
+  bucket = aws_s3_bucket.eb_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_object" "dockerrun_file" {
   bucket = aws_s3_bucket.eb_bucket.id
   key    = "Dockerrun.aws.json"
   source = "../Dockerrun.aws.json"
@@ -55,7 +73,7 @@ resource "aws_elastic_beanstalk_environment" "eb_env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "DOCKERRUN_FILE"
-    value     = "s3://${aws_s3_bucket.eb_bucket.id}/${aws_s3_bucket_object.dockerrun_file.key}"
+    value     = "s3://${aws_s3_bucket.eb_bucket.id}/${aws_s3_object.dockerrun_file.key}"
   }
 
   setting {
@@ -68,6 +86,18 @@ resource "aws_elastic_beanstalk_environment" "eb_env" {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
     value     = aws_subnet.main.id
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckPath"
+    value     = "/"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "MatcherHTTPCode"
+    value     = "200"
   }
 }
 
