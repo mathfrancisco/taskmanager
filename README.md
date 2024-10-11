@@ -69,8 +69,12 @@ O **TaskManager** é uma aplicação voltada para a organização e gestão de t
 
 - **Terraform**:
    - Ferramenta para provisionamento de infraestrutura como código (IaC). Com o Terraform, é possível configurar automaticamente os recursos da **AWS** necessários para a aplicação, como Elastic Beanstalk e bancos de dados.
+     
 - **AWS Elastic Beanstalk**:
    - Plataforma da AWS para o deploy e gerenciamento de aplicações. A aplicação será implantada no Elastic Beanstalk, facilitando o escalonamento e a gestão de infraestrutura.
+     
+- **Nginx**:
+  - Servidor web utilizado para gerenciar as requisições da aplicação e servir os arquivos estáticos do frontend.
 
 ## 🚧 Deploy
 
