@@ -1,0 +1,39 @@
+{
+  "AWSEBDockerrunVersion": "3",
+  "containerDefinitions": [
+    {
+      "name": "mysql",
+      "image": "mysql:8.0",
+      "essential": true,
+      "memory": 256,
+      "environment": [
+        {"name": "MYSQL_ROOT_PASSWORD", "value": "root"},
+        {"name": "MYSQL_DATABASE", "value": "task_db"}
+      ]
+    },
+    {
+      "name": "backend",
+      "image": "your-account-id.dkr.ecr.your-region.amazonaws.com/todolist-backend:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "hostPort": 8080,
+          "containerPort": 8080
+        }
+      ]
+    },
+    {
+      "name": "frontend",
+      "image": "your-account-id.dkr.ecr.your-region.amazonaws.com/todolist-frontend:latest",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ]
+    }
+  ]
+}
