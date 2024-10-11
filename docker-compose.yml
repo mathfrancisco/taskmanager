@@ -14,6 +14,7 @@ services:
       - app-network
 
   backend:
+    container_name: task-back
     build:
       context: ./Task
       dockerfile: Dockerfile
@@ -28,6 +29,7 @@ services:
       - app-network
 
   frontend:
+    container_name: task-front
     build:
       context: ./taskfront/task_angular
       dockerfile: Dockerfile
