@@ -1,12 +1,32 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql-container
     environment:
       MYSQL_ROOT_USERNAME: root
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: task_db # Optional: Automatically create a database
-    ports:
-      - "3306:3306"
+      MYSQL_DATABASE: task_db
     volumes:
-      - ./data:/var/lib/mysql # Persist data between restarts
+      - ./Task/data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./Task
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/task_db
+    depends_on:
+      - mysql
+
+  frontend:
+    build:
+      context: ./taskfront/task_angular
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+networks:
+  default:
+    name: app-network
