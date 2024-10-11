@@ -1,13 +1,15 @@
+
 services:
   mysql:
     image: mysql:8.0
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_USERNAME: root
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: task_db
     volumes:
       - ./Task/data:/var/lib/mysql
+    networks:
+      - app-network
 
   backend:
     build:
@@ -15,9 +17,11 @@ services:
       dockerfile: Dockerfile
     environment:
       SPRING_PROFILES_ACTIVE: dev
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/task_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/task_db
     depends_on:
       - mysql
+    networks:
+      - app-network
 
   frontend:
     build:
@@ -27,7 +31,9 @@ services:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - app-network
 
 networks:
-  default:
-    name: app-network
+  app-network:
+    driver: bridge
