@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/' || 'http://meu-backend.elasticbeanstalk.com/';
+  private apiUrl = 'http://localhost:8080/';
   constructor(
     private http: HttpClient
   ) {}
