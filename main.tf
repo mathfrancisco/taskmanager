@@ -34,8 +34,8 @@ resource "aws_s3_bucket_versioning" "eb_bucket_versioning" {
 resource "aws_s3_object" "dockerrun" {
   bucket = aws_s3_bucket.eb_bucket.id
   key    = "Dockerrun.aws.json"
-  source = "../Dockerrun.aws.json"
-  etag   = filemd5("../Dockerrun.aws.json")
+  source = "./Dockerrun.aws.json"  # Caminho relativo correto
+  etag   = filemd5("./Dockerrun.aws.json")
 }
 
 resource "aws_elastic_beanstalk_application" "eb_app" {
