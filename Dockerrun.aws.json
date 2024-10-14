@@ -1,3 +1,5 @@
+# Dockerrun.aws.json
+
 {
   "AWSEBDockerrunVersion": "3",
   "containerDefinitions": [
@@ -25,7 +27,7 @@
     },
     {
       "name": "backend",
-      "image": "0343-6203-7405.dkr.ecr.sa-east-1.amazonaws.com/task-backend:latest",
+      "image": "0343-6203-7405.dkr.ecr.sa-east-1.amazonaws.com/taskmanager-backend:latest",
       "essential": true,
       "memory": 512,
       "environment": [
@@ -41,7 +43,7 @@
     },
     {
       "name": "frontend",
-      "image": "0343-6203-7405.dkr.ecr.sa-east-1.amazonaws.com/task-frontend:latest",
+      "image": "0343-6203-7405.dkr.ecr.sa-east-1.amazonaws.com/taskmanager-frontend:latest",
       "essential": true,
       "memory": 256,
       "portMappings": [
