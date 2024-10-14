@@ -1,9 +1,11 @@
+# Terraform Configuration (main.tf)
+
 provider "aws" {
   region = "sa-east-1"
 }
 
 resource "aws_s3_bucket" "eb_bucket" {
-  bucket = "eb-app-bucket-${random_id.bucket_suffix.hex}"
+  bucket = "taskmanager-eb-bucket-${random_id.bucket_suffix.hex}"
 }
 
 resource "aws_s3_bucket_ownership_controls" "eb_bucket_ownership" {
@@ -32,17 +34,17 @@ resource "aws_s3_bucket_versioning" "eb_bucket_versioning" {
 resource "aws_s3_object" "dockerrun" {
   bucket = aws_s3_bucket.eb_bucket.id
   key    = "Dockerrun.aws.json"
-  source = "Dockerrun.aws.json"
-  etag   = filemd5("Dockerrun.aws.json")
+  source = "../Dockerrun.aws.json"
+  etag   = filemd5("../Dockerrun.aws.json")
 }
 
 resource "aws_elastic_beanstalk_application" "eb_app" {
-  name        = "todo-list-app"
-  description = "Todo List Application"
+  name        = "taskmanager-app"
+  description = "TaskManager Application"
 }
 
 resource "aws_elastic_beanstalk_environment" "eb_env" {
-  name                = "todo-list-env"
+  name                = "taskmanager-env"
   application         = aws_elastic_beanstalk_application.eb_app.name
   solution_stack_name = "64bit Amazon Linux 2 v3.5.7 running Multi-container Docker"
 
@@ -102,7 +104,7 @@ resource "aws_elastic_beanstalk_environment" "eb_env" {
 }
 
 resource "aws_iam_role" "eb_service_role" {
-  name = "eb-service-role"
+  name = "taskmanager-eb-service-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -119,7 +121,7 @@ resource "aws_iam_role" "eb_service_role" {
 }
 
 resource "aws_iam_instance_profile" "eb_instance_profile" {
-  name = "eb-instance-profile"
+  name = "taskmanager-eb-instance-profile"
   role = aws_iam_role.eb_service_role.name
 }
 
@@ -154,7 +156,7 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
 
   tags = {
-    Name = "todo-list-vpc"
+    Name = "taskmanager-vpc"
   }
 }
 
@@ -162,7 +164,7 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "todo-list-igw"
+    Name = "taskmanager-igw"
   }
 }
 
@@ -173,7 +175,7 @@ resource "aws_subnet" "main" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "todo-list-subnet"
+    Name = "taskmanager-subnet"
   }
 }
 
@@ -186,7 +188,7 @@ resource "aws_route_table" "main" {
   }
 
   tags = {
-    Name = "todo-list-route-table"
+    Name = "taskmanager-route-table"
   }
 }
 
