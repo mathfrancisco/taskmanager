@@ -29,11 +29,11 @@ resource "aws_s3_bucket_versioning" "eb_bucket_versioning" {
   }
 }
 
-resource "aws_s3_object" "user_data_script" {
+resource "aws_s3_object" "dockerrun" {
   bucket = aws_s3_bucket.eb_bucket.id
-  key    = "user_data.sh"
-  source = "user_data.sh"
-  etag   = filemd5("user_data.sh")
+  key    = "Dockerrun.aws.json"
+  source = "Dockerrun.aws.json"
+  etag   = filemd5("Dockerrun.aws.json")
 }
 
 resource "aws_elastic_beanstalk_application" "eb_app" {
@@ -71,10 +71,10 @@ resource "aws_elastic_beanstalk_environment" "eb_env" {
   }
 
   setting {
-  namespace = "aws:elasticbeanstalk:application:environment"
-  name      = "USER_DATA_SCRIPT"
-  value     = "s3://${aws_s3_bucket.eb_bucket.id}/${aws_s3_object.user_data_script.key}"
-}
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DOCKERRUN_FILE"
+    value     = "s3://${aws_s3_bucket.eb_bucket.id}/${aws_s3_object.dockerrun.key}"
+  }
 
   setting {
     namespace = "aws:ec2:vpc"
