@@ -1,60 +1,47 @@
 #!/bin/bash
-# Atualiza o sistema e instala o Docker
+
+# Switch to root user
 sudo su
+
+# Update the system and install Docker
 yum update -y
-amazon-linux-extras install docker -y
+yum install -y docker
 
-# Inicia o serviço Docker e habilita no boot
+# Start Docker service
 service docker start
+
+# Add ec2-user to the docker group
 usermod -a -G docker ec2-user
-systemctl enable docker
 
-# Instala o Docker Compose
-curl -L "<https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)>" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+# Create a docker network
+docker network create app-network
 
-# Cria diretório para o Docker Compose
-mkdir -p /var/app/current
+# Run MySQL container
+docker run -d --name mysql \
+  --network app-network \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_DATABASE=task_db \
+  -p 3306:3306 \
+  mysql:8.0
 
-# Adiciona o Docker Compose File no caminho correto
-cat <<EOT >> /var/app/current/docker-compose.yml
-version: '3'
-services:
- mysql:
- image: mysql:8.0
- container_name: mysql
- environment:
- MYSQL_ROOT_PASSWORD: root
- MYSQL_DATABASE: task_db
- ports:
- - '3306:3306'
- volumes:
- - ./mysql-data:/var/lib/mysql
+# Wait for MySQL to be ready
+echo "Waiting for MySQL to be ready..."
+sleep 30
 
- backend:
- container_name: task-back
- image: mathfrancisco/todolist-backend:latest
- environment:
- SPRING_PROFILES_ACTIVE: dev
- SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/task_db
- ports:
- - '8080:8080'
- depends_on:
- - mysql
+# Run Backend container
+docker run -d --name task-back \
+  --network app-network \
+  -e SPRING_PROFILES_ACTIVE=dev \
+  -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/task_db \
+  -p 8080:8080 \
+  mathfrancisco/todolist-backend:latest
 
- frontend:
- container_name: task-front
- image: mathfrancisco/todolist-frontend:latest
- ports:
- - '80:80'
- depends_on:
- - backend
+# Run Frontend container
+docker run -d --name task-front \
+  --network app-network \
+  -p 80:80 \
+  mathfrancisco/todolist-frontend:latest
 
-networks:
- app-network:
- driver: bridge
-EOT
-
-# Rodar o Docker Compose
-cd /var/app/current
-docker-compose up -d
+# Print container status
+echo "Container status:"
+docker ps -a
