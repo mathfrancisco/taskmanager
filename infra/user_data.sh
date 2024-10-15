@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# Install Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
 # Create directory for Docker Compose
 mkdir -p /var/app/current
 
@@ -18,6 +23,7 @@ services:
       - ./Task/data:/var/lib/mysql
     networks:
       - app-network
+
   backend:
     container_name: task-back
     image: mathfrancisco/todolist-backend:latest
@@ -30,6 +36,7 @@ services:
       - mysql
     networks:
       - app-network
+
   frontend:
     container_name: task-front
     image: mathfrancisco/todolist-frontend:latest
@@ -39,10 +46,12 @@ services:
       - backend
     networks:
       - app-network
+
 networks:
   app-network:
     driver: bridge
 EOT
 
 # Start the containers using Docker Compose
-docker-compose -f /var/app/current/docker-compose.yml up -d
+cd /var/app/current
+docker-compose up -d
