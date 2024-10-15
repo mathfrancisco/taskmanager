@@ -24,8 +24,8 @@
       ]
     },
     {
-      "name": "backend",
-      "image": "0343-6203-7405.dkr.ecr.sa-east-1.amazonaws.com/taskmanager-backend:latest",
+      "name": "task-back",
+      "image": "mathfrancisco/todolist-backend:latest",
       "essential": true,
       "memory": 512,
       "environment": [
@@ -40,8 +40,8 @@
       ]
     },
     {
-      "name": "frontend",
-      "image": "0343-6203-7405.dkr.ecr.sa-east-1.amazonaws.com/taskmanager-frontend:latest",
+      "name": "task-front",
+      "image": "mathfrancisco/todolist-frontend:latest",
       "essential": true,
       "memory": 256,
       "portMappings": [
