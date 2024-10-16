@@ -42,11 +42,10 @@ resource "aws_elastic_beanstalk_environment" "env" {
   application         = aws_elastic_beanstalk_application.app.name
   solution_stack_name = "64bit Amazon Linux 2 v5.4.6 running Multi-container Docker"
 
-
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = aws_iam_instance_profile.eb_profile.name
+    value     = "eb-ec2-instance-profile"  # Use the manually created profile
   }
 
   setting {
@@ -91,38 +90,6 @@ resource "aws_elastic_beanstalk_environment" "env" {
     name      = "ServiceRole"
     value     = aws_iam_role.service_role.name
   }
-}
-
-# IAM Instance Profile
-resource "aws_iam_instance_profile" "eb_profile" {
-  name = "eb-ec2-instance-profile"
-  role = aws_iam_role.eb_role.name
-}
-
-# IAM Role for EC2 instances
-resource "aws_iam_role" "eb_role" {
-  name = "eb-ec2-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action = "sts:AssumeRole",
-        Effect = "Allow",
-        Principal = { Service = "ec2.amazonaws.com" }
-      }
-    ]
-  })
-}
-
-# Attach policies to the EC2 role
-resource "aws_iam_role_policy_attachment" "eb_web_tier" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
-  role       = aws_iam_role.eb_role.id
-}
-
-resource "aws_iam_role_policy_attachment" "eb_multicontainer_docker" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
-  role       = aws_iam_role.eb_role.id
 }
 
 # IAM Role for Elastic Beanstalk service
