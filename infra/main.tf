@@ -40,7 +40,7 @@ resource "aws_security_group" "securitygroup" {
 resource "aws_elastic_beanstalk_environment" "env" {
   name                = "taskmanager-env"
   application         = aws_elastic_beanstalk_application.app.name
-  solution_stack_name = "64bit Amazon Linux 2023 v4.3.8 running Docker"
+  solution_stack_name = "64bit Amazon Linux 2 v5.4.6 running Multi-container Docker"
 
 
   setting {
