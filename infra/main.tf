@@ -3,6 +3,11 @@ provider "aws" {
   region = "sa-east-1"
 }
 
+# Data source for existing EC2 instance profile
+data "aws_iam_instance_profile" "eb_ec2_profile" {
+  name = "eb-ec2-instance-profile"
+}
+
 # Elastic Beanstalk Application
 resource "aws_elastic_beanstalk_application" "app" {
   name        = "taskmanager-app"
@@ -41,50 +46,49 @@ resource "aws_elastic_beanstalk_environment" "env" {
   name                = "taskmanager-env"
   application         = aws_elastic_beanstalk_application.app.name
   solution_stack_name = "64bit Amazon Linux 2 v5.4.6 running Multi-container Docker"
-
+  
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = "eb-ec2-instance-profile"  # Use the manually created profile
+    value     = data.aws_iam_instance_profile.eb_ec2_profile.name
   }
-
+  
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "EnvironmentType"
     value     = "SingleInstance"
   }
-
+  
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
     value     = "vpc-07632126143031ff9"
   }
-
+  
   setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
     value     = "subnet-053d508166aa85895,subnet-05c26f9ac7c48daf6"
   }
-
+  
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "COMPOSE_PROJECT_NAME"
     value     = "taskmanager"
   }
-
+  
   setting {
     namespace = "aws:elasticbeanstalk:environment:proxy"
     name      = "ProxyServer"
     value     = "nginx"
   }
-
-  # Use the user data script to set up Docker Compose
+  
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "UserData"
     value     = base64encode(file("user_data.sh"))
   }
-
+  
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "ServiceRole"
