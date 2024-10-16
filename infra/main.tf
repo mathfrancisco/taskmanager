@@ -86,13 +86,6 @@ resource "aws_elastic_beanstalk_environment" "env" {
     value     = base64encode(file("user_data.sh"))
   }
 
-  # Enable multi-container Docker
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "EnvironmentType"
-    value     = "SingleInstance"
-  }
-
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "ServiceRole"
