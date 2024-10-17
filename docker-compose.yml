@@ -32,6 +32,8 @@ services:
       - "80:80"
     depends_on:
       - backend
+    volumes:
+      - ./taskfront/task_angular/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
       - app-network
 
