@@ -1,47 +1,41 @@
 #!/bin/bash
+              sudo su
+              yum update -y
+              yum install -y docker
+              service docker start
+              usermod -a -G docker ec2-user
 
-# Switch to root user
-sudo su
+              # Create Docker network
+              docker network create app-network
 
-# Update the system and install Docker
-yum update -y
-yum install -y docker
+              # Run MySQL container with memory limits
+              docker run -d --name mysql \
+                --network app-network \
+                -e MYSQL_ROOT_PASSWORD=root \
+                -e MYSQL_DATABASE=task_db \
+                -p 3306:3306 \
+                --memory=512m \
+                mysql:8.0
 
-# Start Docker service
-service docker start
+              # Wait for MySQL to initialize
+              sleep 30
 
-# Add ec2-user to the docker group
-usermod -a -G docker ec2-user
+              # Run backend container with memory limits
+              docker run -d --name task-back \
+                --network app-network \
+                -e SPRING_PROFILES_ACTIVE=dev \
+                -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/task_db \
+                -e JAVA_OPTS="-Xmx384m -Xms128m" \
+                -p 8080:8080 \
+                --memory=384m \
+                mathfrancisco/todolist-backend:latest
 
-# Create a docker network
-docker network create app-network
+              # Run frontend container with memory limits
+              docker run -d --name task-front \
+                --network app-network \
+                -p 80:80 \
+                --memory=256m \
+                mathfrancisco/todolist-frontend:latest
 
-# Run MySQL container
-docker run -d --name mysql \
-  --network app-network \
-  -e MYSQL_ROOT_PASSWORD=root \
-  -e MYSQL_DATABASE=task_db \
-  -p 3306:3306 \
-  mysql:8.0
-
-# Wait for MySQL to be ready
-echo "Waiting for MySQL to be ready..."
-sleep 30
-
-# Run Backend container
-docker run -d --name task-back \
-  --network app-network \
-  -e SPRING_PROFILES_ACTIVE=dev \
-  -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/task_db \
-  -p 8080:8080 \
-  mathfrancisco/todolist-backend:latest
-
-# Run Frontend container
-docker run -d --name task-front \
-  --network app-network \
-  -p 80:80 \
-  mathfrancisco/todolist-frontend:latest
-
-# Print container status
-echo "Container status:"
-docker ps -a
+              # Configurar o Docker para iniciar na inicialização do sistema
+              systemctl enable docker
